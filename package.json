@@ -22,7 +22,8 @@
     "test:mistral": "tsx src/scripts/test-mistral-services.ts",
     "test:worker": "tsx src/scripts/test-worker.ts",
     "test:lhm-merge": "tsx src/scripts/test-lhm-merge.ts",
-    "test:lhm-integration": "tsx src/scripts/test-lhm-merge-integration.ts"
+    "test:lhm-integration": "tsx src/scripts/test-lhm-merge-integration.ts",
+    "test:e2e": "tsx src/scripts/test-e2e.ts"
   },
   "keywords": ["health", "tracking", "api"],
   "author": "",

@@ -2,64 +2,65 @@ import { Mistral } from '@mistralai/mistralai';
 import { withRetry } from '../utils/retry';
 import { logger } from '../utils/logger';
 import { ExternalServiceError } from '../utils/httpError';
+import { env } from '../env';
 
 export class MistralOCRService {
   private client: Mistral;
 
   constructor() {
-    const apiKey = process.env.MISTRAL_API_KEY;
-    if (!apiKey) {
+    if (!env.MISTRAL_API_KEY) {
       throw new Error('MISTRAL_API_KEY environment variable is required');
     }
 
     this.client = new Mistral({
-      apiKey,
+      apiKey: env.MISTRAL_API_KEY,
     });
   }
 
   /**
    * Extract text from PDF using Mistral OCR API
-   * @param pdfBuffer - PDF file buffer
+   * @param documentUrl - Public URL to the PDF document
    * @param filename - Original filename for logging
    * @returns Extracted markdown text
    */
   async extractTextFromPDF(
-    pdfBuffer: Buffer,
+    documentUrl: string,
     filename: string
   ): Promise<string> {
     try {
-      logger.info('Starting OCR extraction', { filename, size: pdfBuffer.length });
+      logger.info('Starting OCR extraction', { filename, documentUrl });
 
       const result = await withRetry(
         async () => {
-          // Convert buffer to base64 for API
-          const base64Pdf = pdfBuffer.toString('base64');
-
-          // Call Mistral OCR API with vision model
-          const response = await this.client.chat.complete({
-            model: 'pixtral-12b-2409',
-            messages: [
-              {
-                role: 'user',
-                content: [
-                  {
-                    type: 'text',
-                    text: 'Extract all text from this medical report PDF. Format the output as markdown, preserving tables and structure. Include all biomarker names, values, units, and reference ranges.',
-                  },
-                  {
-                    type: 'image_url',
-                    imageUrl: `data:application/pdf;base64,${base64Pdf}`,
-                  },
-                ],
-              },
-            ],
-            temperature: 0.1, // Low temperature for consistent extraction
-            maxTokens: 4000,
+          // Call Mistral OCR API
+          const ocrResponse = await this.client.ocr.process({
+            model: 'mistral-ocr-latest',
+            document: {
+              type: 'document_url',
+              documentUrl: documentUrl,
+            },
+            includeImageBase64: false, // We don't need the images back
           });
 
-          const extractedText = response.choices?.[0]?.message?.content;
+          // Extract text from all pages
+          const pages = ocrResponse.pages || [];
+          
+          if (pages.length === 0) {
+            throw new ExternalServiceError(
+              'Mistral OCR',
+              'No pages extracted from PDF'
+            );
+          }
 
-          if (!extractedText || typeof extractedText !== 'string') {
+          // Combine all page texts with page separators
+          const extractedText = pages
+            .map((page: any, index: number) => {
+              const pageText = page.markdown || page.text || '';
+              return `## Page ${index + 1}\n\n${pageText}`;
+            })
+            .join('\n\n---\n\n');
+
+          if (!extractedText || extractedText.trim().length === 0) {
             throw new ExternalServiceError(
               'Mistral OCR',
               'No text extracted from PDF'
@@ -70,11 +71,11 @@ export class MistralOCRService {
         },
         {
           maxAttempts: 3,
-          initialDelayMs: 1000,
+          initialDelayMs: 2000,
           backoffMultiplier: 2,
           shouldRetry: (error: any) => {
             // Retry on rate limit or temporary errors
-            const statusCode = error?.response?.status;
+            const statusCode = error?.response?.status || error?.statusCode;
             const shouldRetry =
               statusCode === 429 || // Rate limit
               statusCode === 500 || // Server error
@@ -126,7 +127,7 @@ export class MistralOCRService {
     try {
       // Simple test with minimal token usage
       await this.client.chat.complete({
-        model: 'pixtral-12b-2409',
+        model: 'mistral-small-latest',
         messages: [
           {
             role: 'user',

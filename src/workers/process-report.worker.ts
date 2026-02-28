@@ -11,13 +11,14 @@ import { logger } from '../utils/logger';
  * Process Report Worker
  * 
  * Orchestrates the complete report processing pipeline:
- * 1. Fetch report and PDF from storage
- * 2. Extract text using Mistral OCR
- * 3. Store raw OCR markdown
- * 4. Extract biomarkers using LLM
- * 5. Normalize and store biomarkers
- * 6. Trigger LHM update
- * 7. Update report status
+ * 1. Fetch report metadata from database
+ * 2. Create signed URL for temporary access
+ * 3. Extract text using Mistral OCR API
+ * 4. Store raw OCR markdown
+ * 5. Extract biomarkers using LLM
+ * 6. Normalize and store biomarkers
+ * 7. Trigger LHM update
+ * 8. Update report status
  */
 
 async function processReportJob(job: Job<ProcessReportJobData>): Promise<void> {
@@ -39,14 +40,14 @@ async function processReportJob(job: Job<ProcessReportJobData>): Promise<void> {
     logger.info('Report fetched', { reportId, fileUrl: report.fileUrl });
     await job.updateProgress(20);
 
-    // Step 3: Download PDF from storage
-    const pdfBuffer = await storageService.downloadFile(report.fileUrl);
-    logger.info('PDF downloaded', { reportId, size: pdfBuffer.length });
+    // Step 3: Create a signed URL for Mistral OCR API access (valid for 1 hour)
+    const signedUrl = await storageService.createSignedUrl(report.fileUrl, 3600);
+    logger.info('Signed URL created for OCR', { reportId });
     await job.updateProgress(30);
 
-    // Step 4: Extract text using Mistral OCR
+    // Step 4: Extract text using Mistral OCR (pass signed URL)
     const ocrMarkdown = await mistralOCRService.extractTextFromPDF(
-      pdfBuffer,
+      signedUrl,
       `report-${reportId}.pdf`
     );
     logger.info('OCR extraction completed', {

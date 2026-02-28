@@ -2,7 +2,8 @@ import { getSupabaseClient } from '../utils/supabase';
 import { ReportEmbedding } from '../types/domain.types';
 import { logger } from '../utils/logger';
 
-const supabase = getSupabaseClient();
+// Lazy initialization - get client when needed, not at module load time
+const getClient = () => getSupabaseClient();
 
 export interface CreateEmbeddingData {
   reportId: string;
@@ -27,7 +28,7 @@ export class EmbeddingRepository {
       chunkLength: data.chunkText.length,
     });
 
-    const { data: embedding, error } = await supabase
+    const { data: embedding, error } = await getClient()
       .from('report_embeddings')
       .insert({
         report_id: data.reportId,
@@ -55,7 +56,7 @@ export class EmbeddingRepository {
       count: embeddings.length,
     });
 
-    const { data, error } = await supabase
+    const { data, error } = await getClient()
       .from('report_embeddings')
       .insert(
         embeddings.map((e) => ({
@@ -95,7 +96,7 @@ export class EmbeddingRepository {
     // Use pgvector's cosine similarity operator (<=>)
     // Lower distance = higher similarity
     // We convert distance to similarity: similarity = 1 - distance
-    const { data, error } = await supabase.rpc('search_embeddings', {
+    const { data, error } = await getClient().rpc('search_embeddings', {
       query_embedding: JSON.stringify(queryEmbedding),
       query_profile_id: profileId,
       match_threshold: 1 - similarityThreshold, // Convert similarity to distance
@@ -122,7 +123,7 @@ export class EmbeddingRepository {
   async findByReport(reportId: string): Promise<ReportEmbedding[]> {
     logger.debug('Finding embeddings by report', { reportId });
 
-    const { data, error } = await supabase
+    const { data, error } = await getClient()
       .from('report_embeddings')
       .select('*')
       .eq('report_id', reportId)
@@ -142,7 +143,7 @@ export class EmbeddingRepository {
   async findByProfile(profileId: string): Promise<ReportEmbedding[]> {
     logger.debug('Finding embeddings by profile', { profileId });
 
-    const { data, error } = await supabase
+    const { data, error } = await getClient()
       .from('report_embeddings')
       .select('*')
       .eq('profile_id', profileId)
@@ -165,7 +166,7 @@ export class EmbeddingRepository {
   async deleteByReport(reportId: string): Promise<void> {
     logger.debug('Deleting embeddings by report', { reportId });
 
-    const { error } = await supabase
+    const { error } = await getClient()
       .from('report_embeddings')
       .delete()
       .eq('report_id', reportId);
@@ -182,7 +183,7 @@ export class EmbeddingRepository {
   async deleteByProfile(profileId: string): Promise<void> {
     logger.debug('Deleting embeddings by profile', { profileId });
 
-    const { error } = await supabase
+    const { error } = await getClient()
       .from('report_embeddings')
       .delete()
       .eq('profile_id', profileId);
@@ -199,7 +200,7 @@ export class EmbeddingRepository {
   async countByReport(reportId: string): Promise<number> {
     logger.debug('Counting embeddings by report', { reportId });
 
-    const { count, error } = await supabase
+    const { count, error } = await getClient()
       .from('report_embeddings')
       .select('*', { count: 'exact', head: true })
       .eq('report_id', reportId);
@@ -218,7 +219,7 @@ export class EmbeddingRepository {
   async countByProfile(profileId: string): Promise<number> {
     logger.debug('Counting embeddings by profile', { profileId });
 
-    const { count, error } = await supabase
+    const { count, error } = await getClient()
       .from('report_embeddings')
       .select('*', { count: 'exact', head: true })
       .eq('profile_id', profileId);

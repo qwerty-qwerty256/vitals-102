@@ -1,9 +1,6 @@
-import dotenv from 'dotenv';
-
-// Load environment variables FIRST before any other imports
-dotenv.config();
-
+import './env'; // Load environment variables FIRST
 import express, { Express } from 'express';
+import { env } from './env';
 import cors from 'cors';
 import helmet from 'helmet';
 import { errorMiddleware } from '@middlewares/error.middleware';
@@ -17,9 +14,16 @@ import chatRoutes from '@routes/chat.routes';
 import notificationRoutes from '@routes/notification.routes';
 import { cronManager } from './lib/cron';
 import { logger } from './utils/logger';
+import { storageService } from './services/storage.service';
 
 // Initialize background workers
 import './workers';
+
+// Initialize storage bucket
+storageService.initializeBucket().catch((error) => {
+  logger.error('Failed to initialize storage bucket:', error);
+  console.error('⚠️  Storage bucket initialization failed. File uploads may not work.');
+});
 
 const app: Express = express();
 
@@ -85,11 +89,11 @@ app.use('/api/settings/notifications', notificationRoutes);
 app.use(errorMiddleware);
 
 // Start server
-const port = process.env.PORT || 3000;
+const port = env.PORT;
 app.listen(port, () => {
   logger.info('Server started', {
     port,
-    environment: process.env.NODE_ENV || 'development',
+    environment: env.NODE_ENV,
   });
   console.log(`✅ Server running on port ${port}`);
   console.log(`📊 Health check: http://localhost:${port}/health`);
