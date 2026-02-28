@@ -74,19 +74,19 @@
     - Add proper error handling
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 5. Implement file upload and storage
-  - [ ] 5.1 Set up Supabase Storage client
+- [x] 5. Implement file upload and storage
+  - [x] 5.1 Set up Supabase Storage client
     - Configure storage bucket for PDF reports
     - Implement upload, download, and delete methods
     - Set up proper access policies
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
   
-  - [ ] 5.2 Create report repository
+  - [x] 5.2 Create report repository
     - Implement ReportRepository with CRUD methods
     - Handle report status transitions (pending → processing → done/failed)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
   
-  - [ ] 5.3 Implement report upload handler
+  - [x] 5.3 Implement report upload handler
     - Set up multer middleware for file uploads
     - Validate file type (PDF only) and size (max 10MB)
     - Generate secure filenames and upload to Supabase Storage
@@ -94,38 +94,38 @@
     - Enqueue background job for OCR processing
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
   
-  - [ ] 5.4 Create report management endpoints
+  - [x] 5.4 Create report management endpoints
     - Implement list, get, and delete report endpoints
     - Add authorization checks (users can only access their own reports)
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
 - [ ] 6. Set up background job queue with BullMQ
-  - [ ] 6.1 Configure Redis and BullMQ
+  - [x] 6.1 Configure Redis and BullMQ
     - Set up Redis connection with proper configuration
     - Create job queue with retry and error handling settings
     - Configure worker concurrency limits
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
   
-  - [ ] 6.2 Create job queue utilities
+  - [x] 6.2 Create job queue utilities
     - Implement queue wrapper with methods to enqueue jobs
     - Add job status tracking and monitoring
     - Set up exponential backoff for retries
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
 - [ ] 7. Implement Mistral API clients
-  - [ ] 7.1 Create Mistral OCR client
+  - [x] 7.1 Create Mistral OCR client
     - Implement OCR API integration to extract text from PDFs
     - Handle API errors and rate limiting
     - Add retry logic with exponential backoff
     - _Requirements: 4.1, 4.2, 4.3_
   
-  - [ ] 7.2 Create Mistral Chat client
+  - [x] 7.2 Create Mistral Chat client
     - Implement chat completion API for LLM operations
     - Support streaming responses
     - Handle context window management
     - _Requirements: 4.4, 6.2, 9.4, 9.5_
   
-  - [ ] 7.3 Create Mistral Embed client
+  - [x] 7.3 Create Mistral Embed client
     - Implement embedding API for vector generation
     - Batch embedding requests for efficiency
     - _Requirements: 10.2, 10.3_

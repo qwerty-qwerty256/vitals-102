@@ -2,10 +2,22 @@ import { Request, Response, NextFunction } from 'express';
 import { ZodSchema, ZodError } from 'zod';
 import { ValidationError } from '@utils/httpError';
 
-export function validateRequest(schema: ZodSchema) {
+type ValidationType = 'body' | 'query' | 'params';
+
+export function validateRequest(schema: ZodSchema, type: ValidationType = 'body') {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
-      req.body = schema.parse(req.body);
+      const target = type === 'body' ? req.body : type === 'query' ? req.query : req.params;
+      const validated = schema.parse(target);
+      
+      if (type === 'body') {
+        req.body = validated;
+      } else if (type === 'query') {
+        req.query = validated;
+      } else {
+        req.params = validated;
+      }
+      
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -13,7 +25,12 @@ export function validateRequest(schema: ZodSchema) {
           path: err.path.join('.'),
           message: err.message,
         }));
-        next(new ValidationError('Invalid request body', details));
+        const message = type === 'body' 
+          ? 'Invalid request body' 
+          : type === 'query' 
+          ? 'Invalid query parameters' 
+          : 'Invalid path parameters';
+        next(new ValidationError(message, details));
       } else {
         next(error);
       }
@@ -22,20 +39,5 @@ export function validateRequest(schema: ZodSchema) {
 }
 
 export function validateQuery(schema: ZodSchema) {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    try {
-      req.query = schema.parse(req.query);
-      next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const details = error.errors.map((err) => ({
-          path: err.path.join('.'),
-          message: err.message,
-        }));
-        next(new ValidationError('Invalid query parameters', details));
-      } else {
-        next(error);
-      }
-    }
-  };
+  return validateRequest(schema, 'query');
 }

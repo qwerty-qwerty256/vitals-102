@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import { errorMiddleware } from '@middlewares/error.middleware';
 import authRoutes from '@routes/auth.routes';
 import profileRoutes from '@routes/profile.routes';
+import reportRoutes from '@routes/report.routes';
 
 const app: Express = express();
 
@@ -28,9 +29,9 @@ app.get('/health', (_req, res) => {
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Additional routes will be added here
-// app.use('/api/reports', reportRoutes);
 // app.use('/api/dashboard', dashboardRoutes);
 // app.use('/api/biomarkers', biomarkerRoutes);
 // app.use('/api/chat', chatRoutes);
