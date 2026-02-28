@@ -20,7 +20,7 @@ INSERT INTO biomarker_definitions (name_normalized, display_name, category, unit
 INSERT INTO biomarker_definitions (name_normalized, display_name, category, unit, ref_range_low, ref_range_high, critical_low, critical_high, description) VALUES
 ('alt', 'ALT (SGPT)', 'liver', 'U/L', 7, 56, 0, 500, 'Alanine aminotransferase - liver enzyme'),
 ('ast', 'AST (SGOT)', 'liver', 'U/L', 10, 40, 0, 500, 'Aspartate aminotransferase - liver enzyme'),
-('alp', 'Alkaline Phosphatase (ALP)', 'liver', 'U/L', 44, 147, 0, 1000, 'Enzyme related to bile ducts and bones'),
+('alkaline_phosphatase', 'Alkaline Phosphatase (ALP)', 'liver', 'U/L', 44, 147, 0, 1000, 'Enzyme related to bile ducts and bones'),
 ('total_bilirubin', 'Total Bilirubin', 'liver', 'mg/dL', 0.1, 1.2, 0, 20, 'Waste product from red blood cell breakdown'),
 ('direct_bilirubin', 'Direct Bilirubin', 'liver', 'mg/dL', 0, 0.3, 0, 10, 'Conjugated bilirubin'),
 ('indirect_bilirubin', 'Indirect Bilirubin', 'liver', 'mg/dL', 0.1, 0.9, 0, 15, 'Unconjugated bilirubin'),
@@ -79,7 +79,16 @@ INSERT INTO biomarker_definitions (name_normalized, display_name, category, unit
 ('sodium', 'Sodium', 'other', 'mEq/L', 136, 145, 120, 160, 'Serum sodium'),
 ('potassium', 'Potassium', 'other', 'mEq/L', 3.5, 5.0, 2.5, 7.0, 'Serum potassium'),
 ('chloride', 'Chloride', 'other', 'mEq/L', 98, 107, 85, 120, 'Serum chloride'),
-('magnesium', 'Magnesium', 'other', 'mg/dL', 1.7, 2.2, 1.0, 4.0, 'Serum magnesium');
+('magnesium', 'Magnesium', 'other', 'mg/dL', 1.7, 2.2, 1.0, 4.0, 'Serum magnesium'),
+('pdw', 'PDW', 'blood_count', '%', 9.0, 17.0, 5.0, 25.0, 'Platelet distribution width'),
+('uibc', 'UIBC', 'other', 'μg/dL', 111, 343, 50, 500, 'Unsaturated iron binding capacity'),
+('transferrin_saturation', 'Transferrin Saturation', 'other', '%', 20, 50, 10, 80, 'Percentage of transferrin saturated with iron'),
+('tibc', 'TIBC', 'other', 'μg/dL', 250, 450, 150, 600, 'Total iron binding capacity'),
+('mpv', 'MPV', 'blood_count', 'fL', 7.5, 11.5, 5.0, 15.0, 'Mean platelet volume'),
+('pct', 'PCT', 'blood_count', '%', 0.2, 0.5, 0.1, 1.0, 'Plateletcrit'),
+('white_blood_cells', 'WBC', 'blood_count', 'thousand/μL', 4.0, 11.0, 1.0, 30.0, 'White blood cell count'),
+('red_blood_cells', 'RBC', 'blood_count', 'million/μL', 4.0, 6.0, 2.0, 8.0, 'Red blood cell count'),
+('platelets', 'Platelets', 'blood_count', 'thousand/μL', 150, 400, 50, 1000, 'Platelet count');
 
 -- Comments
 COMMENT ON TABLE biomarker_definitions IS 'Reference data for biomarker normalization, units, and reference ranges';

@@ -1,4 +1,6 @@
+import '../env'; // Load environment variables first
 import Redis from 'ioredis';
+import { env } from '../env';
 
 // Redis client singleton
 let redisClient: Redis | null = null;
@@ -8,18 +10,12 @@ let redisClient: Redis | null = null;
  */
 export function getRedisClient(): Redis {
   if (!redisClient) {
-    // Get Redis configuration from environment
-    const redisHost = process.env.REDIS_HOST || 'localhost';
-    const redisPort = parseInt(process.env.REDIS_PORT || '6379');
-    const redisPassword = process.env.REDIS_PASSWORD;
-    const redisUsername = process.env.REDIS_USERNAME || 'default';
-    
     redisClient = new Redis({
-      host: redisHost,
-      port: redisPort,
-      username: redisUsername,
-      password: redisPassword,
-      maxRetriesPerRequest: 3,
+      host: env.REDIS_HOST,
+      port: env.REDIS_PORT,
+      username: env.REDIS_USERNAME,
+      password: env.REDIS_PASSWORD,
+      maxRetriesPerRequest: null, // Required for BullMQ blocking operations
       retryStrategy(times) {
         const delay = Math.min(times * 50, 2000);
         return delay;
