@@ -1,0 +1,43 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import dotenv from 'dotenv';
+import { errorMiddleware } from '@middlewares/error.middleware';
+
+// Load environment variables
+dotenv.config();
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors());
+
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// API routes will be added here
+// app.use('/api/profiles', profileRoutes);
+// app.use('/api/reports', reportRoutes);
+// app.use('/api/dashboard', dashboardRoutes);
+// app.use('/api/biomarkers', biomarkerRoutes);
+// app.use('/api/chat', chatRoutes);
+// app.use('/api/settings/notifications', notificationRoutes);
+
+// Error handling middleware (must be last)
+app.use(errorMiddleware);
+
+// Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`✅ Server running on port ${port}`);
+  console.log(`📊 Health check: http://localhost:${port}/health`);
+});
+
+export default app;
