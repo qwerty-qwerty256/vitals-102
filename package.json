@@ -11,7 +11,12 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:push": "supabase db push",
+    "db:types": "supabase gen types typescript --project-id jpfwvvavikkbrferkmuc > src/types/database.types.ts",
+    "db:check": "tsx src/scripts/check-db.ts",
+    "db:link": "supabase link --project-ref jpfwvvavikkbrferkmuc",
+    "db:status": "supabase migration list"
   },
   "keywords": ["health", "tracking", "api"],
   "author": "",

@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { errorMiddleware } from '@middlewares/error.middleware';
+import authRoutes from '@routes/auth.routes';
 
 // Load environment variables
 dotenv.config();
@@ -22,7 +23,10 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// API routes will be added here
+// API routes
+app.use('/api/auth', authRoutes);
+
+// Additional routes will be added here
 // app.use('/api/profiles', profileRoutes);
 // app.use('/api/reports', reportRoutes);
 // app.use('/api/dashboard', dashboardRoutes);

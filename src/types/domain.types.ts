@@ -1,11 +1,13 @@
 // Domain type definitions
 
+/**
+ * User information from Supabase Auth
+ * We don't maintain a separate users table - we use Supabase Auth directly
+ */
 export interface User {
-  id: string;
+  id: string; // Supabase Auth user ID
   email: string;
   name?: string;
-  supabaseUserId: string;
-  createdAt: Date;
 }
 
 export type RelationshipType = 

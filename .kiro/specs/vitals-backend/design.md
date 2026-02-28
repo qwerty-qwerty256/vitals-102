@@ -355,22 +355,16 @@ export default app;
 
 We'll use Supabase migrations to define the schema, and the Supabase JS client will provide type-safe access through generated types.
 
+**Note:** We use Supabase Auth directly without a separate users table. The `user_id` fields reference `auth.uid()` (Supabase Auth user IDs).
+
 ```sql
 -- migrations/001_initial_schema.sql
 
--- Users (synced with Supabase Auth)
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT UNIQUE NOT NULL,
-  name TEXT,
-  supabase_user_id TEXT UNIQUE NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
 -- Family profiles
+-- user_id references Supabase Auth user ID (auth.uid())
 CREATE TABLE profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL, -- Supabase Auth user ID
   name TEXT NOT NULL,
   relationship TEXT NOT NULL DEFAULT 'self',
   dob DATE,
@@ -382,7 +376,7 @@ CREATE TABLE profiles (
 -- Uploaded reports
 CREATE TABLE reports (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL, -- Supabase Auth user ID
   profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   file_url TEXT NOT NULL,
   report_date DATE,
@@ -395,7 +389,7 @@ CREATE TABLE reports (
 CREATE TABLE biomarkers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   report_id UUID REFERENCES reports(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL, -- Supabase Auth user ID
   profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   name_normalized TEXT NOT NULL,
@@ -422,7 +416,7 @@ CREATE TABLE biomarker_definitions (
 -- Living Health Markdown
 CREATE TABLE user_health_markdown (
   profile_id UUID PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL, -- Supabase Auth user ID
   markdown TEXT NOT NULL,
   version INT DEFAULT 1,
   last_updated_at TIMESTAMPTZ DEFAULT now(),
@@ -446,7 +440,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 CREATE TABLE report_embeddings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   report_id UUID REFERENCES reports(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES users(id),
+  user_id UUID NOT NULL, -- Supabase Auth user ID
   profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   chunk_text TEXT NOT NULL,
   embedding VECTOR(1024),
@@ -455,7 +449,7 @@ CREATE TABLE report_embeddings (
 
 -- Notification preferences
 CREATE TABLE notification_prefs (
-  user_id UUID PRIMARY KEY REFERENCES users(id),
+  user_id UUID PRIMARY KEY, -- Supabase Auth user ID
   email_digest_enabled BOOLEAN DEFAULT true,
   digest_frequency TEXT DEFAULT 'monthly',
   last_sent_at TIMESTAMPTZ
@@ -478,13 +472,39 @@ ALTER TABLE user_health_markdown ENABLE ROW LEVEL SECURITY;
 ALTER TABLE report_embeddings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notification_prefs ENABLE ROW LEVEL SECURITY;
 
--- Users can only access their own data
-CREATE POLICY "Users can view own profiles" ON profiles FOR SELECT USING (auth.uid()::text = (SELECT supabase_user_id FROM users WHERE id = user_id));
-CREATE POLICY "Users can insert own profiles" ON profiles FOR INSERT WITH CHECK (auth.uid()::text = (SELECT supabase_user_id FROM users WHERE id = user_id));
-CREATE POLICY "Users can update own profiles" ON profiles FOR UPDATE USING (auth.uid()::text = (SELECT supabase_user_id FROM users WHERE id = user_id));
-CREATE POLICY "Users can delete own profiles" ON profiles FOR DELETE USING (auth.uid()::text = (SELECT supabase_user_id FROM users WHERE id = user_id));
+-- RLS Policies using auth.uid() directly
+CREATE POLICY "Users can view own profiles" ON profiles 
+  FOR SELECT USING (auth.uid() = user_id);
+  
+CREATE POLICY "Users can insert own profiles" ON profiles 
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+  
+CREATE POLICY "Users can update own profiles" ON profiles 
+  FOR UPDATE USING (auth.uid() = user_id);
+  
+CREATE POLICY "Users can delete own profiles" ON profiles 
+  FOR DELETE USING (auth.uid() = user_id);
 
--- Similar policies for other tables...
+CREATE POLICY "Users can view own reports" ON reports 
+  FOR SELECT USING (auth.uid() = user_id);
+  
+CREATE POLICY "Users can insert own reports" ON reports 
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+  
+CREATE POLICY "Users can delete own reports" ON reports 
+  FOR DELETE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own biomarkers" ON biomarkers 
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own LHM" ON user_health_markdown 
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view own embeddings" ON report_embeddings 
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage own notification prefs" ON notification_prefs 
+  FOR ALL USING (auth.uid() = user_id);
 ```
 
 ### Using Supabase Client

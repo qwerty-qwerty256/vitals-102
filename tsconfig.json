@@ -23,6 +23,7 @@
       "@/*": ["src/*"],
       "@controllers/*": ["src/controllers/*"],
       "@services/*": ["src/services/*"],
+      "@repositories/*": ["src/repositories/*"],
       "@middlewares/*": ["src/middlewares/*"],
       "@routes/*": ["src/routes/*"],
       "@validations/*": ["src/validations/*"],

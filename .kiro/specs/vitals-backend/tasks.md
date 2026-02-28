@@ -8,42 +8,42 @@
   - Set up environment variables configuration (.env.example)
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 2. Set up Supabase database and migrations
-  - [ ] 2.1 Create initial database schema migration
+- [x] 2. Set up Supabase database and migrations
+  - [x] 2.1 Create initial database schema migration
     - Write SQL migration for users, profiles, reports, biomarkers, biomarker_definitions, user_health_markdown, lhm_history, report_embeddings, notification_prefs tables
     - Add proper indexes for performance (profiles_user, biomarkers_profile_name, biomarkers_profile_date, reports_profile, embeddings_vector)
     - Enable pgvector extension for embeddings
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   
-  - [ ] 2.2 Create Row Level Security (RLS) policies
+  - [x] 2.2 Create Row Level Security (RLS) policies
     - Write RLS policies for all tables to ensure users can only access their own data
     - Test RLS policies with different user scenarios
     - _Requirements: 1.4, 1.5_
   
-  - [ ] 2.3 Seed biomarker definitions
+  - [x] 2.3 Seed biomarker definitions
     - Create migration to populate biomarker_definitions table with common biomarkers (diabetes, kidney, liver, lipid, thyroid, blood count panels)
     - Include display names, categories, units, and reference ranges
     - _Requirements: 5.3, 5.4, 5.5_
   
-  - [ ] 2.4 Set up Supabase client and type generation
+  - [x] 2.4 Set up Supabase client and type generation
     - Configure Supabase client with service role and anon keys
     - Generate TypeScript types from database schema
     - Create database client wrapper with connection pooling
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
 - [ ] 3. Implement authentication middleware and user management
-  - [ ] 3.1 Create authentication middleware
+  - [x] 3.1 Create authentication middleware
     - Implement authMiddleware to verify Supabase JWT tokens
     - Extract user information from token and attach to request object
     - Handle authentication errors gracefully
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
   
-  - [ ] 3.2 Create user repository
+  - [x] 3.2 Create user repository
     - Implement UserRepository with methods to create, find, and update users
     - Sync Supabase Auth users with application users table
     - _Requirements: 1.1, 1.2, 1.3_
   
-  - [ ] 3.3 Create auth handler
+  - [x] 3.3 Create auth handler
     - Implement session endpoint to return current user info
     - Handle Supabase Auth errors
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
