@@ -1,6 +1,6 @@
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[2]!./node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[3]!./app/globals.css ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[3]!./app/globals.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************/
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Nunito:wght@400;500;600;700&display=swap');
 
 *, ::before, ::after{
@@ -647,6 +647,9 @@ body{
   white-space: nowrap;
   border-width: 0;
 }
+.collapse{
+  visibility: collapse;
+}
 .fixed{
   position: fixed;
 }
@@ -781,6 +784,9 @@ body{
 .inline-flex{
   display: inline-flex;
 }
+.table{
+  display: table;
+}
 .grid{
   display: grid;
 }
@@ -814,8 +820,14 @@ body{
 .h-6{
   height: 1.5rem;
 }
+.h-64{
+  height: 16rem;
+}
 .h-8{
   height: 2rem;
+}
+.h-\[95vh\]{
+  height: 95vh;
 }
 .h-full{
   height: 100%;
@@ -826,11 +838,14 @@ body{
 .max-h-\[120px\]{
   max-height: 120px;
 }
-.max-h-\[80vh\]{
-  max-height: 80vh;
+.max-h-\[85vh\]{
+  max-height: 85vh;
 }
 .max-h-\[90vh\]{
   max-height: 90vh;
+}
+.max-h-\[80vh\]{
+  max-height: 80vh;
 }
 .min-h-\[42px\]{
   min-height: 42px;
@@ -888,6 +903,9 @@ body{
 }
 .flex-shrink-0{
   flex-shrink: 0;
+}
+.border-collapse{
+  border-collapse: collapse;
 }
 .-translate-x-1\/2{
   --tw-translate-x: -50%;
@@ -1041,6 +1059,9 @@ body{
 .rounded-2xl{
   border-radius: 1rem;
 }
+.rounded-3xl{
+  border-radius: 1.5rem;
+}
 .rounded-full{
   border-radius: 9999px;
 }
@@ -1049,9 +1070,6 @@ body{
 }
 .rounded-xl{
   border-radius: 0.75rem;
-}
-.rounded-3xl{
-  border-radius: 1.5rem;
 }
 .rounded-t-3xl{
   border-top-left-radius: 1.5rem;
@@ -1065,6 +1083,9 @@ body{
 }
 .border{
   border-width: 1px;
+}
+.border-0{
+  border-width: 0px;
 }
 .border-2{
   border-width: 2px;
@@ -1332,6 +1353,9 @@ body{
 .pt-2{
   padding-top: 0.5rem;
 }
+.pt-4{
+  padding-top: 1rem;
+}
 .pt-5{
   padding-top: 1.25rem;
 }
@@ -1340,6 +1364,9 @@ body{
 }
 .text-center{
   text-align: center;
+}
+.text-right{
+  text-align: right;
 }
 .font-display{
   font-family: var(--font-crimson), Georgia, serif;
@@ -1376,6 +1403,9 @@ body{
 }
 .font-medium{
   font-weight: 500;
+}
+.font-normal{
+  font-weight: 400;
 }
 .font-semibold{
   font-weight: 600;
