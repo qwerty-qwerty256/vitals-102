@@ -764,15 +764,12 @@ PATCH  /api/settings/notifications        # Update settings
 
 ### Code & Writeup
 
-- **GitHub Repository**: [github.com/yourusername/vitals](https://github.com/yourusername/vitals)
-- **Technical Writeup**: [Link to detailed blog post/article]
-- **Architecture Deep Dive**: [Link to architecture documentation]
+- **GitHub Repository**: [github.com/adityaghai07/vitals](https://github.com/adityaghai07/vitals)
 
 ### Demo & Video
 
-- **Live Demo**: [https://vitals-demo.vercel.app](https://vitals-demo.vercel.app)
+- **Live Demo**: [try this out](https://vitals-bfi75zzce-adityaghai07s-projects.vercel.app/dashboard)
 - **Demo Video**: [YouTube link - 5-minute walkthrough]
-- **Tutorial Series**: [YouTube playlist - Complete guide]
 
 ### Research & References
 
@@ -804,19 +801,11 @@ PATCH  /api/settings/notifications        # Update settings
 
 ---
 
-## Screenshots
+## Product 
+<img width="1376" height="768" alt="Gemini_Generated_Image_t6hidvt6hidvt6hi" src="https://github.com/user-attachments/assets/9f1a4015-e1b3-4a11-a73b-addd01a72035" />
 
-### Dashboard
-![Dashboard showing health summary and biomarker status](link-to-screenshot)
 
-### Trend Charts
-![Interactive charts showing biomarker trends over time](link-to-screenshot)
 
-### Chat Interface
-![AI-powered Q&A about health data](link-to-screenshot)
-
-### Family Profiles
-![Manage health records for multiple family members](link-to-screenshot)
 
 ---
 
@@ -831,7 +820,7 @@ PATCH  /api/settings/notifications        # Update settings
 - Family profile management
 - Monthly email digests
 
-### Phase 2: Enhanced Features (Q2 2025)
+### Phase 2: Enhanced Features
 - Mobile app (React Native)
 - Doctor consultation booking
 - Medication tracking
@@ -839,14 +828,14 @@ PATCH  /api/settings/notifications        # Update settings
 - Health goal setting
 - Export reports as PDF
 
-### Phase 3: Advanced Analytics (Q3 2025)
+### Phase 3: Advanced Analytics
 - Predictive health insights
 - Personalized recommendations
 - Integration with wearables (Fitbit, Apple Health)
 - Telemedicine integration
 - Insurance claim assistance
 
-### Phase 4: Enterprise (Q4 2025)
+### Phase 4: Enterpriss
 - Corporate wellness programs
 - Multi-tenant architecture
 - HIPAA compliance certification
@@ -906,9 +895,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/vitals/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/vitals/discussions)
-- **Email**: support@vitals.com
+- **Issues**: [GitHub Issues](https://github.com/adityaghai07/vitals/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/adityaghai07/vitals/discussions)
+- **Email**: willaddsoon!
 
 ---
 
@@ -916,6 +905,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with care for better health outcomes**
 
-[Website](https://vitals.com) • [Demo](https://vitals-demo.vercel.app)
+ • [Demo](https://vitals-bfi75zzce-adityaghai07s-projects.vercel.app/dashboard)
 
 </div>
