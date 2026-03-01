@@ -2,6 +2,7 @@ import { reportRepository } from '../repositories/report.repository';
 import { embeddingRepository } from '../repositories/embedding.repository';
 import { storageService } from './storage.service';
 import { queueService } from './queue.service';
+import { biomarkerService } from './biomarker.service';
 import profileRepository from '../repositories/profile.repository';
 import { Report } from '../types/domain.types';
 import { HttpError, NotFoundError, AuthorizationError } from '../utils/httpError';
@@ -107,9 +108,9 @@ export class ReportService {
    * 
    * @param userId - Authenticated user ID
    * @param reportId - Report ID to fetch
-   * @returns Report details
+   * @returns Report details with biomarkers
    */
-  async getReportById(userId: string, reportId: string): Promise<Report> {
+  async getReportById(userId: string, reportId: string): Promise<Report & { biomarkers?: any[] }> {
     try {
       const report = await reportRepository.findById(reportId);
       
@@ -121,7 +122,37 @@ export class ReportService {
         throw new AuthorizationError('Unauthorized to access this report');
       }
 
-      return report;
+      // Fetch biomarkers for this report with definitions
+      const biomarkersWithDefinitions = await biomarkerService.getBiomarkersByReportWithDefinitions(reportId);
+      
+      logger.debug('Fetched biomarkers for report', {
+        reportId,
+        biomarkerCount: biomarkersWithDefinitions.length,
+      });
+
+      // Structure biomarkers like dashboard service does
+      const biomarkers = biomarkersWithDefinitions.map((biomarker) => ({
+        biomarker: {
+          id: biomarker.id,
+          reportId: biomarker.reportId,
+          userId: biomarker.userId,
+          profileId: biomarker.profileId,
+          name: biomarker.name,
+          nameNormalized: biomarker.nameNormalized,
+          category: biomarker.category || biomarker.definition?.category || 'Other',
+          value: biomarker.value,
+          unit: biomarker.unit,
+          reportDate: biomarker.reportDate,
+          createdAt: biomarker.createdAt,
+        },
+        definition: biomarker.definition,
+        status: biomarkerService.calculateStatus(biomarker.value, biomarker.definition),
+      }));
+
+      return {
+        ...report,
+        biomarkers,
+      };
     } catch (error) {
       if (error instanceof HttpError) {
         throw error;

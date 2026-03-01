@@ -5,10 +5,18 @@ export const fetchDashboard = async (profileId: string): Promise<DashboardData> 
   const { data } = await apiClient.get<DashboardData>('/dashboard', {
     params: { profile_id: profileId },
   });
+   // Debug logging
+  console.log('Dashboard API response:', {
+    profile: data.profile?.name,
+    summary: data.summary,
+    biomarkerCount: data.latestBiomarkers?.length,
+    firstBiomarker: data.latestBiomarkers?.[0],
+  });
   return data;
 };
 
 export const fetchAllDashboards = async (): Promise<DashboardData[]> => {
   const { data } = await apiClient.get<{ dashboards: DashboardData[] }>('/dashboard/all');
+  
   return data.dashboards;
 };

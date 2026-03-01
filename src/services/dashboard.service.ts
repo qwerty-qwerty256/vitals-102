@@ -7,12 +7,26 @@ import { HttpError } from '../utils/httpError';
 import { getCached, cache } from '../utils/cache';
 import {
   LHMDocument,
-  BiomarkerWithDefinition,
+  BiomarkerDefinition,
   BiomarkerStatusType,
   Profile,
 } from '../types/domain.types';
 
-export interface BiomarkerWithStatus extends BiomarkerWithDefinition {
+export interface BiomarkerWithStatus {
+  biomarker: {
+    id: string;
+    reportId: string;
+    userId: string;
+    profileId: string;
+    name: string;
+    nameNormalized: string;
+    category?: string;
+    value: number;
+    unit: string;
+    reportDate?: Date;
+    createdAt: Date;
+  };
+  definition?: BiomarkerDefinition;
   status: BiomarkerStatusType;
 }
 
@@ -71,11 +85,34 @@ export class DashboardService {
           // Fetch latest biomarkers with definitions
           const latestBiomarkers = await biomarkerService.getLatestBiomarkers(profileId);
 
-          // Calculate status for each biomarker
+          logger.debug('Raw biomarkers from service', {
+            count: latestBiomarkers.length,
+            sample: latestBiomarkers[0],
+          });
+
+          // Calculate status for each biomarker and structure for frontend
           const biomarkersWithStatus = latestBiomarkers.map((biomarker) => ({
-            ...biomarker,
+            biomarker: {
+              id: biomarker.id,
+              reportId: biomarker.reportId,
+              userId: biomarker.userId,
+              profileId: biomarker.profileId,
+              name: biomarker.name,
+              nameNormalized: biomarker.nameNormalized,
+              category: biomarker.category || biomarker.definition?.category || 'Other',
+              value: biomarker.value,
+              unit: biomarker.unit,
+              reportDate: biomarker.reportDate,
+              createdAt: biomarker.createdAt,
+            },
+            definition: biomarker.definition,
             status: biomarkerService.calculateStatus(biomarker.value, biomarker.definition),
           }));
+
+          logger.debug('Structured biomarkers for frontend', {
+            count: biomarkersWithStatus.length,
+            sample: biomarkersWithStatus[0],
+          });
 
           // Calculate days since last report
           let daysSinceLastReport: number | undefined;
@@ -90,8 +127,8 @@ export class DashboardService {
           const totalReports = await reportRepository.countByProfile(profileId);
 
           // Get latest report date
-          const latestReportDate = biomarkersWithStatus.length > 0 && biomarkersWithStatus[0].reportDate
-            ? biomarkersWithStatus[0].reportDate.toISOString().split('T')[0]
+          const latestReportDate = biomarkersWithStatus.length > 0 && biomarkersWithStatus[0].biomarker.reportDate
+            ? biomarkersWithStatus[0].biomarker.reportDate.toISOString().split('T')[0]
             : null;
 
           logger.info('Dashboard data fetched successfully', {

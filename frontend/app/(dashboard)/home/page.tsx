@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Leaf, Upload } from 'lucide-react';
+import { ChevronRight, Leaf, Upload, FileText } from 'lucide-react';
 import { useProfiles } from '@/lib/hooks/useProfiles';
 import { useDashboard } from '@/lib/hooks/useDashboard';
 import { useProfileStore } from '@/lib/store/profileStore';
@@ -12,12 +12,14 @@ import { BiomarkerGrid } from '@/components/dashboard/BiomarkerGrid';
 import { ProfileSwitcher } from '@/components/layout/ProfileSwitcher';
 import { UploadButton } from '@/components/reports/UploadButton';
 import { ReportCard } from '@/components/reports/ReportCard';
+import { LHMViewer } from '@/components/lhm/LHMViewer';
 import { useReports } from '@/lib/hooks/useReports';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const { data: profiles = [], isLoading: profilesLoading } = useProfiles();
   const { activeProfileId, setActiveProfile, getActiveProfile } = useProfileStore();
+  const [showLHM, setShowLHM] = useState(false);
 
   const activeProfile = getActiveProfile(profiles);
 
@@ -95,6 +97,27 @@ export default function DashboardPage() {
               alertCount={alertCount}
             />
 
+            {/* LHM Button */}
+            {dashboard.lhm && (
+              <div className="px-4">
+                <button
+                  onClick={() => setShowLHM(true)}
+                  className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-2xl p-4 flex items-center justify-between shadow-card transition-all hover:shadow-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                      <FileText size={20} />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-sm">View Health Summary</p>
+                      <p className="text-xs text-white/80">Living Health Markdown</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={20} className="text-white/80" />
+                </button>
+              </div>
+            )}
+
             {dashboard.latestBiomarkers.length > 0 && (
               <section>
                 <div className="flex items-center justify-between px-4 mb-3">
@@ -125,6 +148,16 @@ export default function DashboardPage() {
           </>
         )}
       </main>
+
+      {/* LHM Viewer Modal */}
+      {dashboard?.lhm && activeProfile && (
+        <LHMViewer
+          markdown={dashboard.lhm.markdown}
+          profileName={activeProfile.name}
+          isOpen={showLHM}
+          onClose={() => setShowLHM(false)}
+        />
+      )}
     </div>
   );
 }

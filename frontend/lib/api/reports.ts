@@ -10,6 +10,14 @@ export const fetchReports = async (profileId: string): Promise<Report[]> => {
 
 export const fetchReport = async (id: string): Promise<Report> => {
   const { data } = await apiClient.get<{ report: Report }>(`/reports/${id}`);
+  
+  // Debug logging
+  console.log('Report API response:', {
+    reportId: data.report?.id,
+    biomarkerCount: data.report?.biomarkers?.length,
+    firstBiomarker: data.report?.biomarkers?.[0],
+  });
+  
   return data.report;
 };
 

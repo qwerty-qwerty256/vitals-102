@@ -157,6 +157,48 @@ export class BiomarkerRepository {
   }
 
   /**
+   * Get biomarkers for a specific report with definitions
+   */
+  async findByReportWithDefinitions(reportId: string): Promise<BiomarkerWithDefinition[]> {
+    logger.debug('Finding biomarkers by report with definitions', { reportId });
+
+    // Use raw SQL query since we removed the foreign key relationship
+    const { data, error } = await supabase.rpc('get_biomarkers_by_report', {
+      p_report_id: reportId
+    });
+
+    if (error) {
+      logger.error('Failed to find biomarkers by report with definitions', { error, reportId });
+      throw new Error(`Failed to find biomarkers: ${error.message}`);
+    }
+
+    return data.map((row: any) => ({
+      id: row.id,
+      reportId: row.report_id,
+      userId: row.user_id,
+      profileId: row.profile_id,
+      name: row.name,
+      nameNormalized: row.name_normalized,
+      category: row.category,
+      value: row.value,
+      unit: row.unit,
+      reportDate: row.report_date ? new Date(row.report_date) : undefined,
+      createdAt: new Date(row.created_at),
+      definition: row.def_name_normalized ? {
+        nameNormalized: row.def_name_normalized,
+        displayName: row.def_display_name,
+        category: row.def_category,
+        unit: row.def_unit,
+        refRangeLow: row.def_ref_range_low,
+        refRangeHigh: row.def_ref_range_high,
+        criticalLow: row.def_critical_low,
+        criticalHigh: row.def_critical_high,
+        description: row.def_description,
+      } : undefined,
+    }));
+  }
+
+  /**
    * Get biomarkers with their definitions joined
    */
   async findByProfileWithDefinitions(

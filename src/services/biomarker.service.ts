@@ -237,6 +237,13 @@ ${ocrMarkdown}`;
   }
 
   /**
+   * Get biomarkers for a specific report with definitions
+   */
+  async getBiomarkersByReportWithDefinitions(reportId: string): Promise<BiomarkerWithDefinition[]> {
+    return biomarkerRepository.findByReportWithDefinitions(reportId);
+  }
+
+  /**
    * Delete biomarkers for a report
    */
   async deleteBiomarkersByReport(reportId: string): Promise<void> {

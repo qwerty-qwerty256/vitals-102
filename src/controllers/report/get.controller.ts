@@ -47,6 +47,7 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
         rawOcrMarkdown: report.rawOcrMarkdown,
         processingStatus: report.processingStatus,
         uploadedAt: report.uploadedAt,
+        biomarkers: report.biomarkers || [], // Include biomarkers
       },
     });
   } catch (error) {
