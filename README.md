@@ -35,7 +35,7 @@
 
 ## Demo & Video
 
-**Live Demo**: [Try it on mobile!](https://vitals-bfi75zzce-adityaghai07s-projects.vercel.app/dashboard)
+**Live Demo**: [Try it on mobile!](https://vitals-rho.vercel.app)
 
 **Demo Video**: [Watch on YouTube](https://youtu.be/mt6oHAHMWjc)
 
@@ -787,7 +787,7 @@ PATCH  /api/settings/notifications        # Update settings
 
 ### Demo & Video
 
-- **Live Demo**: [Try Vitals](https://vitals-bfi75zzce-adityaghai07s-projects.vercel.app/dashboard)
+- **Live Demo**: [Try Vitals](https://vitals-rho.vercel.app)
 - **Demo Video**: [Watch on YouTube](https://youtu.be/mt6oHAHMWjc)
 - **Demo Video**: [YouTube link - 5-minute walkthrough]
 
@@ -931,6 +931,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with care for better health outcomes**
 
- • [Demo](https://vitals-bfi75zzce-adityaghai07s-projects.vercel.app/dashboard)
+ • [Demo](https://vitals-rho.vercel.app)
 
 </div>
